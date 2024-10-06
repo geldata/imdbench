@@ -85,7 +85,7 @@ docker-postgres: docker-network docker-postgres-volume
 		-e POSTGRES_HOST_AUTH_METHOD=trust \
 		--network=webapp-bench \
 		-p 15432:5432 \
-		postgres:14
+		postgres:16
 	sleep 3
 	$(DOCKER) exec webapp-bench-postgres pg_isready -t10
 
