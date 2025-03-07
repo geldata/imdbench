@@ -7,13 +7,16 @@
   },
   "dependencies": {
     "@planetscale/database": "^1.19.0",
-    "drizzle-orm": "^0.30.10",
-    "pg": "^8.13.0",
-    "postgres": "^3.4.4"
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
+    "pg": "^8.14.0",
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
-    "@types/node": "^18.19.54",
-    "tsx": "^3.14.0",
-    "typescript": "^5.6.2"
+    "@types/node": "^22.13.10",
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.5",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }
