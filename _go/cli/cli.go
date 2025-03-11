@@ -39,8 +39,8 @@ func parseOrFatal(seconds int) time.Duration {
 func ParseArgs() Args {
 	var (
 		app = kingpin.New(
-			"golang-edgedb-http-bench",
-			"EdgeDB HTTP benchmark runner.")
+			"golang-gel-http-bench",
+			"Gel HTTP benchmark runner.")
 
 		concurrency = app.Flag(
 			"concurrency", "number of concurrent connections").Default("10").Int()
@@ -62,10 +62,10 @@ func ParseArgs() Args {
 		).Default("text").Enum("text", "json")
 
 		host = app.Flag(
-			"host", "EdgeDB server host").Default("127.0.0.1").String()
+			"host", "Gel server host").Default("127.0.0.1").String()
 
 		port = app.Flag(
-			"port", "EdgeDB server port").Default("8080").Int()
+			"port", "Gel server port").Default("8080").Int()
 
 		path = app.Flag(
 			"path", "GraphQL API path").Default("").String()
@@ -80,7 +80,7 @@ func ParseArgs() Args {
 
 		benchmark = app.Flag(
 			"benchmark",
-			"application protocol to use: http or edgedb",
+			"application protocol to use: http or gel",
 		).Required().String()
 
 		queryname = app.Flag(

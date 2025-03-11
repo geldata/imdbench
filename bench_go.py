@@ -49,14 +49,14 @@ def run_query(ctx, benchmark, queryname, querydata, port):
 
     if 'hasura' in benchmark:
         path = '/v1/graphql'
-    elif 'edgedb_go_graphql' == benchmark:
-        path = "/db/edgedb/graphql"
-    elif 'edgedb_go_http' == benchmark:
-        path = "/db/edgedb/edgeql"
+    elif 'gel_go_graphql' == benchmark:
+        path = "/db/gel/graphql"
+    elif 'gel_go_http' == benchmark:
+        path = "/db/gel/edgeql"
     else:
         path = "/"
 
-    int_ids = 'edgedb' not in benchmark
+    int_ids = 'gel' not in benchmark
 
     cmd = [exe, '--concurrency', ctx.concurrency, '--duration', ctx.duration,
            '--timeout', ctx.timeout, '--warmup-time', ctx.warmup_time,
@@ -122,7 +122,7 @@ def run_bench(ctx, benchmark, queries_mod):
 
 def main():
     ctx, _ = _shared.parse_args(
-        prog_desc='EdgeDB Databases Benchmark (Go drivers)',
+        prog_desc='Gel Databases Benchmark (Go drivers)',
         out_to_json=True)
 
     print('============ Go ============')

@@ -10,7 +10,7 @@ class App extends Sequelize {
       host: 'localhost',
       port: 15432,
       username: 'sequelize_bench',
-      password: 'edgedbbenchmark',
+      password: 'gelbenchmark',
       database: 'sequelize_bench',
       // native: true,
       logging: null,

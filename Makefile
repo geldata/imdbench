@@ -4,14 +4,14 @@ SHELL = /bin/bash
 
 .PHONY: all load new-dataset compile load-postgres-helpers
 .PHONY:	stop-docker reset-postgres
-.PHONY: load-mongodb load-edgedb load-django load-sqlalchemy load-postgres
+.PHONY: load-mongodb load-gel load-django load-sqlalchemy load-postgres
 .PHONY: load-typeorm load-sequelize load-prisma
 .PHONY: load-graphql load-hasura load-postgraphile
-.PHONY: run-js run-py run-orms run-graphql run-edgedb
+.PHONY: run-js run-py run-orms run-graphql run-gel
 
 CURRENT_DIR = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-EDGEDB_VERSION ?= latest
+GEL_VERSION ?= latest
 
 DOCKER ?= docker
 PSQL ?= psql
@@ -36,7 +36,7 @@ movies=$(shell expr ${people} / 4)
 all:
 	@echo "pick a target"
 
-$(BUILD)/edbdataset.json:
+$(BUILD)/geldataset.json:
 	cd dataset && $(PP) cleandata.py
 
 $(BUILD)/dataset.json:
@@ -92,72 +92,72 @@ docker-postgres: docker-network docker-postgres-volume
 docker-postgres-stop:
 	-$(DOCKER) stop webapp-bench-postgres
 
-docker-edgedb-volume:
-	$(DOCKER) volume inspect webapp-bench-edgedb >/dev/null 2>&1 \
-		|| $(DOCKER) volume create webapp-bench-edgedb
+docker-gel-volume:
+	$(DOCKER) volume inspect webapp-bench-gel >/dev/null 2>&1 \
+		|| $(DOCKER) volume create webapp-bench-gel
 
-docker-edgedb-volume-destroy:
-	$(DOCKER) volume inspect webapp-bench-edgedb >/dev/null 2>&1 \
-		&& $(DOCKER) volume rm webapp-bench-edgedb
+docker-gel-volume-destroy:
+	$(DOCKER) volume inspect webapp-bench-gel >/dev/null 2>&1 \
+		&& $(DOCKER) volume rm webapp-bench-gel
 
-docker-edgedb: docker-network docker-edgedb-volume
-	$(DOCKER) stop webapp-bench-edgedb >/dev/null 2>&1 || :
-	$(DOCKER) run --rm -d --name webapp-bench-edgedb \
-		-v webapp-bench-edgedb:/var/lib/edgedb/data \
-		-e EDGEDB_SERVER_SECURITY=insecure_dev_mode \
+docker-gel: docker-network docker-gel-volume
+	$(DOCKER) stop webapp-bench-gel >/dev/null 2>&1 || :
+	$(DOCKER) run --rm -d --name webapp-bench-gel \
+		-v webapp-bench-gel:/var/lib/gel/data \
+		-e GEL_SERVER_SECURITY=insecure_dev_mode \
 		--network=webapp-bench \
 		-p 15656:5656 \
-		edgedb/edgedb:$(EDGEDB_VERSION)
-	edgedb -H localhost -P 15656 \
+		geldata/gel:$(GEL_VERSION)
+	gel -H localhost -P 15656 \
 		--tls-security=insecure --wait-until-available=120s \
-		query "SELECT 'EdgeDB ready'"
+		query "SELECT 'Gel ready'"
 
-docker-edgedb-stop:
-	$(DOCKER) stop webapp-bench-edgedb
+docker-gel-stop:
+	$(DOCKER) stop webapp-bench-gel
 
 stop-docker:
 	-$(DOCKER) stop hasura-bench
 	-$(DOCKER) stop postgraphile-bench
 	-$(DOCKER) stop webapp-bench-postgres
-	-$(DOCKER) stop webapp-bench-edgedb
+	-$(DOCKER) stop webapp-bench-gel
 
 docker-clean: stop-docker docker-network-destroy \
-              docker-postgres-volume-destroy docker-edgedb-volume-destroy
+              docker-postgres-volume-destroy docker-gel-volume-destroy
 
-load-mongodb: $(BUILD)/edbdataset.json
-	$(PP) -m _mongodb.loaddata $(BUILD)/edbdataset.json
+load-mongodb: $(BUILD)/geldataset.json
+	$(PP) -m _mongodb.loaddata $(BUILD)/geldataset.json
 
-load-edgedb-nobulk: $(BUILD)/edbdataset.json docker-edgedb
-	-edgedb project unlink
-	-edgedb instance destroy edgedb_bench --force
-	edgedb -H localhost -P 15656 instance link \
-		--non-interactive --trust-tls-cert --overwrite edgedb_bench \
-	&& edgedb -H localhost -P 15656 project init --link \
-		--non-interactive --no-migrations --server-instance edgedb_bench
-	edgedb query 'CREATE DATABASE temp'
-	edgedb -d temp query 'DROP DATABASE edgedb'
-	edgedb -d temp query 'CREATE DATABASE edgedb'
-	edgedb query 'DROP DATABASE temp'
-	edgedb migrate
-	$(PP) -m _edgedb.loaddata_nobulk $(BUILD)/edbdataset.json
+load-gel-nobulk: $(BUILD)/geldataset.json docker-gel
+	-gel project unlink
+	-gel instance destroy -I gel_bench --force
+	gel -H localhost -P 15656 instance link \
+		--non-interactive --trust-tls-cert --overwrite gel_bench \
+	&& gel -H localhost -P 15656 project init --link \
+		--non-interactive --no-migrations --server-instance gel_bench
+	gel query 'CREATE DATABASE temp'
+	gel -b temp query 'DROP DATABASE main'
+	gel -b temp query 'CREATE DATABASE main'
+	gel query 'DROP DATABASE temp'
+	gel migrate
+	$(PP) -m _gel.loaddata_nobulk $(BUILD)/geldataset.json
 
-load-edgedb: $(BUILD)/edbdataset.json docker-edgedb
-	-edgedb project unlink --non-interactive
-	-edgedb instance destroy edgedb_bench --force
-	edgedb -H localhost -P 15656 instance link \
-		--non-interactive --trust-tls-cert --overwrite edgedb_bench
-	edgedb -H localhost -P 15656 project init --link \
-		--non-interactive --no-migrations --server-instance edgedb_bench
-	edgedb query 'CREATE DATABASE temp'
-	edgedb -d temp query 'DROP DATABASE edgedb'
-	edgedb -d temp query 'CREATE DATABASE edgedb'
-	edgedb query 'DROP DATABASE temp'
-	edgedb migrate
-	$(PP) -m _edgedb.loaddata $(BUILD)/edbdataset.json
-	cd _edgedb_js && npm i && npx @edgedb/generate edgeql-js --output-dir querybuilder --target cjs --force-overwrite
+load-gel: $(BUILD)/geldataset.json docker-gel
+	-gel project unlink --non-interactive
+	-gel instance destroy -I gel_bench --force
+	gel -H localhost -P 15656 instance link \
+		--non-interactive --trust-tls-cert --overwrite gel_bench
+	gel -H localhost -P 15656 project init --link \
+		--non-interactive --no-migrations --server-instance gel_bench
+	gel query 'CREATE DATABASE temp'
+	gel -b temp query 'DROP DATABASE main'
+	gel -b temp query 'CREATE DATABASE main'
+	gel query 'DROP DATABASE temp'
+	gel migrate
+	$(PP) -m _gel.loaddata $(BUILD)/geldataset.json
+	cd _gel_js && npm i && npx @gel/generate edgeql-js --output-dir querybuilder --target cjs --force-overwrite
 
-load-edgedb-nosetup:
-	$(PP) -m _edgedb.loaddata $(BUILD)/edbdataset.json
+load-gel-nosetup:
+	$(PP) -m _gel.loaddata $(BUILD)/geldataset.json
 
 
 load-django: $(BUILD)/dataset.json docker-postgres
@@ -167,7 +167,7 @@ load-django: $(BUILD)/dataset.json docker-postgres
 		"DROP ROLE IF EXISTS django_bench;"
 	$(PSQL_CMD) -tc \
 		"CREATE ROLE django_bench WITH \
-			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+			LOGIN ENCRYPTED PASSWORD 'gelbenchmark';"
 	$(PSQL_CMD) -tc \
 		"CREATE DATABASE django_bench WITH OWNER = django_bench;"
 
@@ -182,7 +182,7 @@ load-sqlalchemy: $(BUILD)/dataset.json docker-postgres
 		"DROP ROLE IF EXISTS sqlalch_bench;"
 	$(PSQL_CMD) -tc \
 		"CREATE ROLE sqlalch_bench WITH \
-			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+			LOGIN ENCRYPTED PASSWORD 'gelbenchmark';"
 	$(PSQL_CMD) -tc \
 		"CREATE DATABASE sqlalch_bench WITH OWNER = sqlalch_bench;"
 
@@ -216,7 +216,7 @@ reset-postgres: docker-postgres
 		"DROP ROLE IF EXISTS postgres_bench;"
 	$(PSQL_CMD) -U postgres -tc \
 		"CREATE ROLE postgres_bench WITH \
-			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+			LOGIN ENCRYPTED PASSWORD 'gelbenchmark';"
 	$(PSQL_CMD) -U postgres -tc \
 		"CREATE DATABASE postgres_bench WITH OWNER = postgres_bench;"
 
@@ -257,7 +257,7 @@ load-hasura: load-postgres-helpers
 load-prisma: docker-postgres
 	cd _prisma && \
 	npm i && \
-	echo 'DATABASE_URL="postgresql://postgres_bench:edgedbbenchmark@localhost:15432/postgres_bench?schema=public"' > .env && \
+	echo 'DATABASE_URL="postgresql://postgres_bench:gelbenchmark@localhost:15432/postgres_bench?schema=public"' > .env && \
 	npx prisma generate && npm i
 
 load-postgraphile: docker-postgres
@@ -274,7 +274,7 @@ load-typeorm: $(BUILD)/dataset.json docker-postgres
 		"DROP ROLE IF EXISTS typeorm_bench;"
 	$(PSQL_CMD) -tc \
 		"CREATE ROLE typeorm_bench WITH \
-			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+			LOGIN ENCRYPTED PASSWORD 'gelbenchmark';"
 	$(PSQL_CMD) -tc \
 		"CREATE DATABASE typeorm_bench WITH OWNER = typeorm_bench;"
 
@@ -290,7 +290,7 @@ load-sequelize: $(BUILD)/dataset.json docker-postgres
 		"DROP ROLE IF EXISTS sequelize_bench;"
 	$(PSQL_CMD) -tc \
 		"CREATE ROLE sequelize_bench WITH \
-			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+			LOGIN ENCRYPTED PASSWORD 'gelbenchmark';"
 	$(PSQL_CMD) -tc \
 		"CREATE DATABASE sequelize_bench WITH OWNER = sequelize_bench;"
 
@@ -299,7 +299,7 @@ load-sequelize: $(BUILD)/dataset.json docker-postgres
 load-drizzle: $(BUILD)/dataset.json load-postgres
 	cd _drizzle && npm i && npm run build
 
-load: load-mongodb load-edgedb load-django load-sqlalchemy load-postgres \
+load: load-mongodb load-gel load-django load-sqlalchemy load-postgres \
 	  load-typeorm load-sequelize load-prisma load-graphql load-drizzle
 
 load-graphql: load-hasura load-postgraphile
@@ -310,22 +310,22 @@ compile:
 RUNNER = python bench.py --query insert_movie --query get_movie --query get_user --concurrency 1 --duration 10 --net-latency 1
 
 run-js:
-	$(RUNNER) --html docs/js.html --json docs/js.json typeorm sequelize prisma drizzle edgedb_js_qb
+	$(RUNNER) --html docs/js.html --json docs/js.json typeorm sequelize prisma drizzle gel_js_qb
 
 run-py:
-	$(RUNNER) --html docs/py.html --json docs/py.json django sqlalchemy edgedb_py_sync
+	$(RUNNER) --html docs/py.html --json docs/py.json django sqlalchemy gel_py_sync
 
 run-sql:
-	$(RUNNER) --html docs/sql.html --json docs/sql.json edgedb_py_sync postgres_psycopg postgres_asyncpg postgres_pg postgres_pgx postgres_dart
+	$(RUNNER) --html docs/sql.html --json docs/sql.json gel_py_sync postgres_psycopg postgres_asyncpg postgres_pg postgres_pgx postgres_dart
 
 run-graphql:
-	$(RUNNER) --html docs/py.html --json docs/py.json postgres_hasura_go postgres_postgraphile_go edgedb_go_graphql
+	$(RUNNER) --html docs/py.html --json docs/py.json postgres_hasura_go postgres_postgraphile_go gel_go_graphql
 
 run-orms:
-	$(RUNNER) --html docs/orms.html --json docs/orms.json typeorm sequelize prisma edgedb_js_qb django django_restfw mongodb sqlalchemy drizzle
+	$(RUNNER) --html docs/orms.html --json docs/orms.json typeorm sequelize prisma gel_js_qb django django_restfw mongodb sqlalchemy drizzle
 
-run-edgedb:
-	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync edgedb_py_json edgedb_py_json_async edgedb_go edgedb_go_json edgedb_go_graphql edgedb_go_http edgedb_js edgedb_js_json edgedb_js_qb edgedb_dart edgedb_dart_json
+run-gel:
+	$(RUNNER) --html docs/gel.html --json docs/gel.json gel_py_sync gel_py_json gel_py_json_async gel_go gel_go_json gel_go_graphql gel_go_http gel_js gel_js_json gel_js_qb gel_dart gel_dart_json
 
 run-scratch:
-	python bench.py --query insert_movie --concurrency 1 --warmup-time 2 --duration 5 --html docs/scratch.html edgedb_go
+	python bench.py --query insert_movie --concurrency 1 --warmup-time 2 --duration 5 --html docs/scratch.html gel_go

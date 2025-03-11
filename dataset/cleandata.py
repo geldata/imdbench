@@ -51,7 +51,7 @@ def clean(data: dict):
         rec['middle_name'] = rec['middle_name'] or ''
 
     # Check that we generated unique image names as we use that
-    # fact when importing data into EdgeDB.
+    # fact when importing data into Gel.
     imgs = set()
     for i, rec in enumerate(itertools.chain(
             data['user'], data['person'], data['movie'])):
@@ -148,7 +148,7 @@ def clean_json():
     with open(build_path / 'protodataset.json', 'rt') as f:
         data = json.load(f)
 
-    with open(build_path / 'edbdataset.json', 'wt') as f:
+    with open(build_path / 'geldataset.json', 'wt') as f:
         data = clean(data)
         f.write(json.dumps(data))
 

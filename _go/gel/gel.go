@@ -1,4 +1,4 @@
-package edgedb
+package gel
 
 import (
 	"context"
@@ -8,84 +8,84 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/edgedb/edgedb-go"
+	"github.com/geldata/gel-go"
 
-	"github.com/edgedb/imdbench/_go/bench"
-	"github.com/edgedb/imdbench/_go/cli"
+	"github.com/geldata/imdbench/_go/bench"
+	"github.com/geldata/imdbench/_go/cli"
 )
 
 type User struct {
-	ID            edgedb.UUID `json:"id" edgedb:"id"`
-	Name          string      `json:"name" edgedb:"name"`
-	Image         string      `json:"image" edgedb:"image"`
-	LatestReviews []UReview   `json:"latest_reviews" edgedb:"latest_reviews"`
+	ID            gel.UUID `json:"id" gel:"id"`
+	Name          string      `json:"name" gel:"name"`
+	Image         string      `json:"image" gel:"image"`
+	LatestReviews []UReview   `json:"latest_reviews" gel:"latest_reviews"`
 }
 
 type UReview struct {
-	ID     edgedb.UUID `json:"id" edgedb:"id"`
-	Body   string      `json:"body" edgedb:"body"`
-	Rating int64       `json:"rating" edgedb:"rating"`
-	Movie  RMovie      `json:"movie" edgedb:"movie"`
+	ID     gel.UUID `json:"id" gel:"id"`
+	Body   string      `json:"body" gel:"body"`
+	Rating int64       `json:"rating" gel:"rating"`
+	Movie  RMovie      `json:"movie" gel:"movie"`
 }
 
 type RMovie struct {
-	ID        edgedb.UUID `json:"id" edgedb:"id"`
-	Image     string      `json:"image" edgedb:"image"`
-	Title     string      `json:"title" edgedb:"title"`
-	AvgRating float64     `json:"avg_rating" edgedb:"avg_rating"`
+	ID        gel.UUID `json:"id" gel:"id"`
+	Image     string      `json:"image" gel:"image"`
+	Title     string      `json:"title" gel:"title"`
+	AvgRating float64     `json:"avg_rating" gel:"avg_rating"`
 }
 
 type Movie struct {
-	ID          edgedb.UUID `json:"id" edgedb:"id"`
-	Image       string      `json:"image" edgedb:"image"`
-	Title       string      `json:"title" edgedb:"title"`
-	Year        int64       `json:"year" edgedb:"year"`
-	Description string      `json:"description" edgedb:"description"`
-	AvgRating   float64     `json:"avg_rating" edgedb:"avg_rating"`
-	Directors   []MPerson   `json:"directors" edgedb:"directors"`
-	Cast        []MPerson   `json:"cast" edgedb:"cast"`
-	Reviews     []MReview   `json:"reviews" edgedb:"reviews"`
+	ID          gel.UUID `json:"id" gel:"id"`
+	Image       string      `json:"image" gel:"image"`
+	Title       string      `json:"title" gel:"title"`
+	Year        int64       `json:"year" gel:"year"`
+	Description string      `json:"description" gel:"description"`
+	AvgRating   float64     `json:"avg_rating" gel:"avg_rating"`
+	Directors   []MPerson   `json:"directors" gel:"directors"`
+	Cast        []MPerson   `json:"cast" gel:"cast"`
+	Reviews     []MReview   `json:"reviews" gel:"reviews"`
 }
 
 type MPerson struct {
-	ID       edgedb.UUID `json:"id" edgedb:"id"`
-	FullName string      `json:"full_name" edgedb:"full_name"`
-	Image    string      `json:"image" edgedb:"image"`
+	ID       gel.UUID `json:"id" gel:"id"`
+	FullName string      `json:"full_name" gel:"full_name"`
+	Image    string      `json:"image" gel:"image"`
 }
 
 type MReview struct {
-	ID     edgedb.UUID `json:"id" edgedb:"id"`
-	Body   string      `json:"body" edgedb:"body"`
-	Rating int64       `json:"rating" edgedb:"rating"`
-	Author RUser       `json:"author" edgedb:"author"`
+	ID     gel.UUID `json:"id" gel:"id"`
+	Body   string      `json:"body" gel:"body"`
+	Rating int64       `json:"rating" gel:"rating"`
+	Author RUser       `json:"author" gel:"author"`
 }
 
 type RUser struct {
-	ID    edgedb.UUID `json:"id" edgedb:"id"`
-	Name  string      `json:"name" edgedb:"name"`
-	Image string      `json:"image" edgedb:"image"`
+	ID    gel.UUID `json:"id" gel:"id"`
+	Name  string      `json:"name" gel:"name"`
+	Image string      `json:"image" gel:"image"`
 }
 
 type Person struct {
-	ID       edgedb.UUID        `json:"id" edgedb:"id"`
-	FullName string             `json:"full_name" edgedb:"full_name"`
-	Image    string             `json:"image" edgedb:"image"`
-	Bio      edgedb.OptionalStr `json:"bio" edgedb:"bio"`
-	ActedIn  []PMovie           `json:"acted_in" edgedb:"acted_in"`
-	Directed []PMovie           `json:"directed" edgedb:"directed"`
+	ID       gel.UUID        `json:"id" gel:"id"`
+	FullName string             `json:"full_name" gel:"full_name"`
+	Image    string             `json:"image" gel:"image"`
+	Bio      gel.OptionalStr `json:"bio" gel:"bio"`
+	ActedIn  []PMovie           `json:"acted_in" gel:"acted_in"`
+	Directed []PMovie           `json:"directed" gel:"directed"`
 }
 
 type PMovie struct {
-	ID        edgedb.UUID `json:"id" edgedb:"id"`
-	Image     string      `json:"image" edgedb:"image"`
-	Title     string      `json:"title" edgedb:"title"`
-	Year      int64       `json:"year" edgedb:"year"`
-	AvgRating float64     `json:"avg_rating" edgedb:"avg_rating"`
+	ID        gel.UUID `json:"id" gel:"id"`
+	Image     string      `json:"image" gel:"image"`
+	Title     string      `json:"title" gel:"title"`
+	Year      int64       `json:"year" gel:"year"`
+	AvgRating float64     `json:"avg_rating" gel:"avg_rating"`
 }
 
 func RepackWorker(args cli.Args) (exec bench.Exec, close bench.Close) {
 	ctx := context.TODO()
-	pool, err := edgedb.CreateClient(ctx, edgedb.Options{Concurrency: 1})
+	pool, err := gel.CreateClient(ctx, gel.Options{Concurrency: 1})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -119,7 +119,7 @@ func RepackWorker(args cli.Args) (exec bench.Exec, close bench.Close) {
 	return exec, close
 }
 
-func execPerson(pool *edgedb.Client, args cli.Args) bench.Exec {
+func execPerson(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -133,7 +133,7 @@ func execPerson(pool *edgedb.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = edgedb.ParseUUID(id)
+		params["id"], err = gel.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -154,7 +154,7 @@ func execPerson(pool *edgedb.Client, args cli.Args) bench.Exec {
 	}
 }
 
-func execMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
+func execMovie(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -168,7 +168,7 @@ func execMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = edgedb.ParseUUID(id)
+		params["id"], err = gel.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -189,7 +189,7 @@ func execMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
 	}
 }
 
-func execUser(pool *edgedb.Client, args cli.Args) bench.Exec {
+func execUser(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -203,7 +203,7 @@ func execUser(pool *edgedb.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = edgedb.ParseUUID(id)
+		params["id"], err = gel.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -224,7 +224,7 @@ func execUser(pool *edgedb.Client, args cli.Args) bench.Exec {
 	}
 }
 
-func updateMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
+func updateMovie(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -238,7 +238,7 @@ func updateMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = edgedb.ParseUUID(id)
+		params["id"], err = gel.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -259,7 +259,7 @@ func updateMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
 	}
 }
 
-func insertUser(pool *edgedb.Client, args cli.Args) bench.Exec {
+func insertUser(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -293,7 +293,7 @@ func insertUser(pool *edgedb.Client, args cli.Args) bench.Exec {
 	}
 }
 
-func insertMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
+func insertMovie(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -313,19 +313,19 @@ func insertMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
 		params["description"] = text + "description" + strconv.Itoa(num)
 		params["year"] = int64(num)
 
-		params["did"], err = edgedb.ParseUUID(qargs[1])
+		params["did"], err = gel.ParseUUID(qargs[1])
 		if err != nil {
 			log.Fatal(err)
 		}
-		params["cid0"], err = edgedb.ParseUUID(qargs[2])
+		params["cid0"], err = gel.ParseUUID(qargs[2])
 		if err != nil {
 			log.Fatal(err)
 		}
-		params["cid1"], err = edgedb.ParseUUID(qargs[3])
+		params["cid1"], err = gel.ParseUUID(qargs[3])
 		if err != nil {
 			log.Fatal(err)
 		}
-		params["cid2"], err = edgedb.ParseUUID(qargs[4])
+		params["cid2"], err = gel.ParseUUID(qargs[4])
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -346,7 +346,7 @@ func insertMovie(pool *edgedb.Client, args cli.Args) bench.Exec {
 	}
 }
 
-func insertMoviePlus(pool *edgedb.Client, args cli.Args) bench.Exec {
+func insertMoviePlus(pool *gel.Client, args cli.Args) bench.Exec {
 	ctx := context.TODO()
 	params := make(map[string]interface{}, 1)
 
@@ -393,7 +393,7 @@ func insertMoviePlus(pool *edgedb.Client, args cli.Args) bench.Exec {
 
 func JSONWorker(args cli.Args) (bench.Exec, bench.Close) {
 	ctx := context.TODO()
-	pool, err := edgedb.CreateClient(ctx, edgedb.Options{Concurrency: 1})
+	pool, err := gel.CreateClient(ctx, gel.Options{Concurrency: 1})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -409,12 +409,12 @@ func JSONWorker(args cli.Args) (bench.Exec, bench.Close) {
 	exec := func(qargs []string) (time.Duration, string) {
 		if args.QueryName[:3] == "get" {
 			// get queries only have one argument - ID
-			params["id"], err = edgedb.ParseUUID(qargs[0])
+			params["id"], err = gel.ParseUUID(qargs[0])
 			if err != nil {
 				log.Fatal(err)
 			}
 		} else if args.QueryName == "update_movie" {
-			params["id"], err = edgedb.ParseUUID(qargs[0])
+			params["id"], err = gel.ParseUUID(qargs[0])
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -432,19 +432,19 @@ func JSONWorker(args cli.Args) (bench.Exec, bench.Close) {
 			params["description"] = text + "description" + strconv.Itoa(num)
 			params["year"] = int64(num)
 
-			params["did"], err = edgedb.ParseUUID(qargs[1])
+			params["did"], err = gel.ParseUUID(qargs[1])
 			if err != nil {
 				log.Fatal(err)
 			}
-			params["cid0"], err = edgedb.ParseUUID(qargs[2])
+			params["cid0"], err = gel.ParseUUID(qargs[2])
 			if err != nil {
 				log.Fatal(err)
 			}
-			params["cid1"], err = edgedb.ParseUUID(qargs[3])
+			params["cid1"], err = gel.ParseUUID(qargs[3])
 			if err != nil {
 				log.Fatal(err)
 			}
-			params["cid2"], err = edgedb.ParseUUID(qargs[4])
+			params["cid2"], err = gel.ParseUUID(qargs[4])
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -18,7 +18,7 @@ def connect(ctx):
     conn = psycopg2.connect(
         user='postgres_bench',
         dbname='postgres_bench',
-        password='edgedbbenchmark',
+        password='gelbenchmark',
         host=ctx.db_host,
         port=ctx.pg_port)
     conn.autocommit = True

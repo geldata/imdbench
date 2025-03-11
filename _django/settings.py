@@ -35,7 +35,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_bench',
         'USER': 'django_bench',
-        'PASSWORD': 'edgedbbenchmark',
+        'PASSWORD': 'gelbenchmark',
         'HOST': 'localhost',
         'PORT': '15432',
     }

@@ -17,7 +17,7 @@ class Runner implements DartBenchmarkRunner {
             port: 15432,
             database: 'postgres_bench',
             username: 'postgres_bench',
-            password: 'edgedbbenchmark',
+            password: 'gelbenchmark',
           ),
           settings: PgPoolSettings()..concurrency = opts['concurrency'],
         );

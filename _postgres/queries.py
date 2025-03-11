@@ -19,7 +19,7 @@ async def connect(ctx):
     return await asyncpg.connect(
         user='postgres_bench',
         database='postgres_bench',
-        password='edgedbbenchmark',
+        password='gelbenchmark',
         host=ctx.db_host,
         port=ctx.pg_port)
 

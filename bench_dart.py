@@ -101,7 +101,7 @@ def run_bench(ctx, benchmark):
 
 def main():
     ctx, _ = _shared.parse_args(
-        prog_desc='EdgeDB Databases Benchmark (Dart drivers)',
+        prog_desc='Gel Databases Benchmark (Dart drivers)',
         out_to_json=True)
 
     print('============ Dart ============')

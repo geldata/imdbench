@@ -89,7 +89,7 @@ export class App extends BaseApp {
       user: "postgres_bench",
       host: "localhost",
       database: "postgres_bench",
-      password: "edgedbbenchmark",
+      password: "gelbenchmark",
       port: 15432,
       ...(options || {}),
     };

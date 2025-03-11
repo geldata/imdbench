@@ -57,8 +57,8 @@ def run_query(ctx, benchmark, queryname):
         '--query', queryname,
     ]
 
-    if benchmark.startswith('edgedb'):
-        opts.extend(('--port', ctx.edgedb_port))
+    if benchmark.startswith('gel'):
+        opts.extend(('--port', ctx.gel_port))
     else:
         opts.extend(('--port', ctx.pg_port))
 
@@ -67,7 +67,7 @@ def run_query(ctx, benchmark, queryname):
     if benchmark == 'prisma_untuned':
         with open('_prisma/.env', 'wt') as f:
             f.write(
-                f'DATABASE_URL="postgresql://postgres_bench:edgedbbenchmark@'
+                f'DATABASE_URL="postgresql://postgres_bench:gelbenchmark@'
                 f'localhost:15432/postgres_bench'
                 f'?schema=public'
                 f'&connection_limit={ctx.concurrency}'
@@ -117,7 +117,7 @@ def run_bench(ctx, benchmark):
 
 def main():
     ctx, _ = _shared.parse_args(
-        prog_desc='EdgeDB Databases Benchmark (JS drivers)',
+        prog_desc='Gel Databases Benchmark (JS drivers)',
         out_to_json=True)
 
     print('============ JS ============')

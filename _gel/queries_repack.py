@@ -6,7 +6,7 @@
 ##
 
 
-import edgedb
+import gel
 import json
 import random
 
@@ -16,8 +16,8 @@ INSERT_PREFIX = 'insert_test__'
 
 
 def connect(ctx):
-    return edgedb.create_client().with_retry_options(
-        edgedb.RetryOptions(attempts=10),
+    return gel.create_client().with_retry_options(
+        gel.RetryOptions(attempts=10),
     )
 
 

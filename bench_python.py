@@ -368,7 +368,7 @@ def main():
     multiprocessing.set_start_method('spawn')
 
     ctx, _ = _shared.parse_args(
-        prog_desc='EdgeDB Databases Benchmark (Python drivers)',
+        prog_desc='Gel Databases Benchmark (Python drivers)',
         out_to_json=True)
 
     print('============ Python ============')

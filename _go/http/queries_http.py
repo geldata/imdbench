@@ -6,14 +6,14 @@
 ##
 
 
-import edgedb
+import gel
 
 
 INSERT_PREFIX = 'insert_test__'
 
 
 def get_port(ctx):
-    return ctx.edgedb_port
+    return ctx.gel_port
 
 
 def get_queries(ctx):
@@ -56,7 +56,7 @@ def get_queries(ctx):
 
 
 def connect(ctx):
-    return edgedb.create_client(max_concurrency=1)
+    return gel.create_client(max_concurrency=1)
 
 
 def close(ctx, conn):
