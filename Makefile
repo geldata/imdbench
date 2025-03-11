@@ -86,7 +86,7 @@ docker-postgres: docker-network docker-postgres-volume
 		--network=webapp-bench \
 		-p 15432:5432 \
 		postgres:17
-	sleep 3
+	sleep 10
 	$(DOCKER) exec webapp-bench-postgres pg_isready -t10
 
 docker-postgres-stop:
@@ -190,7 +190,7 @@ load-sqlalchemy: $(BUILD)/dataset.json docker-postgres
 	$(PP) _sqlalchemy/loaddata.py $(BUILD)/dataset.json
 
 
-load-postgres: docker-postgres-stop reset-postgres $(BUILD)/dataset.json
+load-postgres: docker-postgres reset-postgres $(BUILD)/dataset.json
 	$(PSQL_CMD) -U postgres_bench -d postgres_bench \
 			--file=$(CURRENT_DIR)/_postgres/schema.sql
 
