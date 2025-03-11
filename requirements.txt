@@ -1,8 +1,8 @@
 aiohttp
 alembic~=1.11.1
 sqlalchemy~=2.0.14
-Django~=4.2
-djangorestframework~=3.14.0
+Django~=5.1
+djangorestframework~=3.15.2
 gel~=3.0
 faker
 psycopg2-binary~=2.9.6
