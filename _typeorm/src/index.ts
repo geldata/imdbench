@@ -12,7 +12,7 @@ var defaultOptions: ConnectionOptions = {
   host: "localhost",
   port: 15432,
   username: "typeorm_bench",
-  password: "edgedbbenchmark",
+  password: "gelbenchmark",
   database: "typeorm_bench",
   synchronize: false,
   logging: false,

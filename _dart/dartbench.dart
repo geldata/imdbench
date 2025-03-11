@@ -10,7 +10,7 @@ import 'dart:convert';
 
 import 'package:args/args.dart';
 
-import './edgedb/main.dart' show EdgeDBDartApp;
+import './gel/main.dart' show GelDartApp;
 import './postgres/main.dart' show PostgresDartApp;
 
 final argsParser = ArgParser()
@@ -102,11 +102,11 @@ abstract class DartBenchmarkRunner {
 
 DartBenchmarkApp getApp(Map<String, dynamic> args) {
   switch (args['app']) {
-    case 'edgedb_dart':
-      return EdgeDBDartApp(concurrency: args['concurrency'], runner: 'repack')
+    case 'gel_dart':
+      return GelDartApp(concurrency: args['concurrency'], runner: 'repack')
         ..init();
-    case 'edgedb_dart_json':
-      return EdgeDBDartApp(concurrency: args['concurrency'], runner: 'json')
+    case 'gel_dart_json':
+      return GelDartApp(concurrency: args['concurrency'], runner: 'json')
         ..init();
     case 'postgres_dart':
       return PostgresDartApp(concurrency: args['concurrency']);

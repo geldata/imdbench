@@ -13,12 +13,12 @@ import (
 	// import used by database/sql
 	_ "gopkg.in/go-on/pq.v2"
 
-	"github.com/edgedb/imdbench/_go/bench"
-	"github.com/edgedb/imdbench/_go/cli"
+	"github.com/geldata/imdbench/_go/bench"
+	"github.com/geldata/imdbench/_go/cli"
 )
 
 func PQWorker(args cli.Args) (bench.Exec, bench.Close) {
-	db, err := sql.Open("postgres", "user=postgres_bench dbname=postgres_bench password=edgedbbenchmark sslmode=disable")
+	db, err := sql.Open("postgres", "user=postgres_bench dbname=postgres_bench password=gelbenchmark sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}

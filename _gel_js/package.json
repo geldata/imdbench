@@ -1,5 +1,5 @@
 {
-  "name": "_edgedb_js",
+  "name": "_gel_js",
   "version": "1.0.0",
   "engines": {
     "node": ">=14"
@@ -9,11 +9,11 @@
     "url": ""
   },
   "license": "UNLICENSED",
-  "description": "_edgedb_js",
+  "description": "_gel_js",
   "dependencies": {
-    "edgedb": "^1.5.12"
+    "gel": "^2.0.1"
   },
   "devDependencies": {
-    "@edgedb/generate": "^0.5.6"
+    "@gel/generate": "^0.6.2"
   }
 }

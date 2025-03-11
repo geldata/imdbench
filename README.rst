@@ -243,7 +243,7 @@ across a range of query functionality.
 👀 For per-query results, interactive charts, and latency jitter statistics, 
 view the full report!
 
-JavaScript ORMs [`Full Report <https://edgedb.github.io/imdbench/js.html>`_]
+JavaScript ORMs [`Full Report <https://geldata.github.io/imdbench/js.html>`_]
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The libraries tested are:
@@ -251,37 +251,37 @@ The libraries tested are:
 - `Prisma <https://prisma.io>`_
 - `TypeORM <https://typeorm.io/#/>`_
 - `Sequelize <https://sequelize.org/>`_
-- `EdgeDB (TypeScript query builder) <https://www.edgedb.com/docs/clients/01_js/index>`_
+- `Gel (TypeScript query builder) <https://docs.geldata.com/reference/clients/js>`_
 
 
 .. image:: ./docs/js_thru.png
-  :target: https://edgedb.github.io/imdbench/js.html
+  :target: https://geldata.github.io/imdbench/js.html
   :alt: JavaScript ORM throughput results
 
 .. image:: ./docs/js_lat.png
-  :target: https://edgedb.github.io/imdbench/js.html
+  :target: https://geldata.github.io/imdbench/js.html
   :alt: JavaScript ORM latency results
 
 
-Python ORMs [`Full Report <https://edgedb.github.io/imdbench/py.html>`_]
+Python ORMs [`Full Report <https://geldata.github.io/imdbench/py.html>`_]
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The libraries tested are:
 
 - `Django <https://docs.djangoproject.com/en/4.0/topics/db/queries/>`_
 - `SQLAlchemy <https://www.sqlalchemy.org/>`_
-- `EdgeDB (Python client) <https://www.edgedb.com/docs/clients/00_python/index>`_
+- `Gel (Python client) <https://docs.geldata.com/reference/clients/python>`_
 
 .. image:: ./docs/py_thru.png
-  :target: https://edgedb.github.io/imdbench/py.html
+  :target: https://geldata.github.io/imdbench/py.html
   :alt: Python ORM throughput results
 
 .. image:: ./docs/py_lat.png
-  :target: https://edgedb.github.io/imdbench/py.html
+  :target: https://geldata.github.io/imdbench/py.html
   :alt: Python ORM latency results
 
 
-Raw SQL [`Full Report <https://edgedb.github.io/imdbench/sql.html>`_]
+Raw SQL [`Full Report <https://geldata.github.io/imdbench/sql.html>`_]
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -294,15 +294,15 @@ Postgres drivers:
 - `go-pgx <https://github.com/jackc/pgx>`_
 - `node-postgres <https://node-postgres.com/>`_
 
-For reference the EdgeDB results (using the `Python client 
-<https://github.com/edgedb/edgedb-python>`_) are also included.
+For reference the Gel results (using the `Python client
+<https://github.com/geldata/gel-python>`_) are also included.
 
 .. image:: ./docs/sql_thru.png
-  :target: https://edgedb.github.io/imdbench/sql.html
+  :target: https://geldata.github.io/imdbench/sql.html
   :alt: SQL throughput results
 
 .. image:: ./docs/sql_lat.png
-  :target: https://edgedb.github.io/imdbench/sql.html
+  :target: https://geldata.github.io/imdbench/sql.html
   :alt: SQL latency results
 
 .. raw:: html
@@ -316,13 +316,13 @@ For reference the EdgeDB results (using the `Python client
   results from deep queries in a performant way; as such, certain benchmark 
   operations are implemented as 2+ serially-executed queries. By contrast, 
   ``asyncpg`` (which was originally designed as the Postgres interface for 
-  EdgeDB) can express all operations as a single highly-optimized SQL query 
+  Gel) can express all operations as a single highly-optimized SQL query
   and represents the high-water mark for this benchmark.
 
 Analysis
 --------
 
-Predictably, ORMs perform poorly on this benchmark relative to EdgeDB or raw 
+Predictably, ORMs perform poorly on this benchmark relative to Gel or raw
 SQL, both of which can express more complex operations in a single query. 
 
 However, *the goal of this benchmark is not to pick on ORM libraries*. ORMs 
@@ -346,11 +346,11 @@ can be crippling as an application scales in complexity and traffic.
 The third way
 ^^^^^^^^^^^^^
 
-Our goal in designing EdgeDB is to provide a third option that combines the 
-best of all worlds. Using EdgeDB feels like using an ORM: your schema is 
+Our goal in designing Gel is to provide a third option that combines the
+best of all worlds. Using Gel feels like using an ORM: your schema is
 declarative, your queries return structured objects, and you don't need to 
 deal with the hairiness of SQL. (If you're using our `TypeScript query builder 
-<https://www.edgedb.com/docs/clients/01_js/index#the-query-builder>`_, you 
+<https://docs.geldata.com/reference/clients/js/querybuilder>`_, you
 even get full static typing.) But, vitally, you can reap these benefits 
 without the sacrificing performance or the power of a full-fledged query 
 language. 
@@ -360,7 +360,7 @@ language.
   * - 
     - ORMs
     - SQL
-    - EdgeDB
+    - Gel
   * - Intuitive nested fetching
     - 🟢
     - 🔴
@@ -395,7 +395,7 @@ language.
     - 🟢
 
 
-Visit `edgedb.com <https://www.edgedb.com>`_ to learn more.
+Visit `geldata.com <https://www.geldata.com>`_ to learn more.
 
 Running locally
 ---------------

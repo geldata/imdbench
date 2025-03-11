@@ -8,7 +8,7 @@
 
 import argparse
 import asyncio
-import edgedb
+import gel
 import json
 import progress.bar
 import uvloop
@@ -20,7 +20,7 @@ class Pool:
 
     def __init__(self, data, *, concurrency: int):
         self._concurrency = concurrency
-        self.client = edgedb.create_async_client(max_concurrency=concurrency)
+        self.client = gel.create_async_client(max_concurrency=concurrency)
 
         self._results = asyncio.Queue()
 
@@ -240,7 +240,7 @@ def id2image(idmap, ids):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Load EdgeDB dataset.')
+    parser = argparse.ArgumentParser(description='Load Gel dataset.')
     parser.add_argument('filename', type=str,
                         help='The JSON dataset file')
     args = parser.parse_args()

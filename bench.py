@@ -274,50 +274,50 @@ def run_benchmarks(args, argv):
 
 def main():
     args, argv = _shared.parse_args(
-        prog_desc='EdgeDB Databases Benchmark',
+        prog_desc='Gel Databases Benchmark',
         out_to_html=True,
         out_to_json=True)
 
-    if any(b.startswith('edgedb') for b in args.benchmarks):
+    if any(b.startswith('gel') for b in args.benchmarks):
         print(__file__)
         project_info_proc = subprocess.run(
-            ["edgedb", "project", "info", "--json"],
+            ["gel", "project", "info", "--json"],
             text=True,
             capture_output=True,
         )
         if project_info_proc.returncode != 0:
             print(
-                f"`edgedb project` returned"
+                f"`gel project` returned"
                 f" {project_info_proc.returncode}. Please run"
-                f" `make load-edgedb`, or initialize the EdgeDB"
+                f" `make load-gel`, or initialize the Gel"
                 f" project directly",
                 file=sys.stderr,
             )
             return 1
 
         project_info = json.loads(project_info_proc.stdout)
-        args.edgedb_instance = project_info["instance-name"]
-        os.environ["EDGEDB_INSTANCE"] = args.edgedb_instance
+        args.gel_instance = project_info["instance-name"]
+        os.environ["GEL_INSTANCE"] = args.gel_instance
 
         instance_status_proc = subprocess.run(
-            ["edgedb", "instance", "status", "--json", args.edgedb_instance],
+            ["gel", "instance", "status", "--json", "-I", args.gel_instance],
             text=True,
             capture_output=True,
         )
         if (instance_status_proc.returncode != 0 and
                 instance_status_proc.returncode != 3):
             print(
-                f"`edgedb instance status` returned"
+                f"`gel instance status` returned"
                 f" {instance_status_proc.returncode}. Please run"
-                f" `make load-edgedb`, or initialize the EdgeDB"
+                f" `make load-gel`, or initialize the Gel"
                 f" project directly",
                 file=sys.stderr,
             )
             return 1
 
         instance_status = json.loads(instance_status_proc.stdout)
-        args.edgedb_port = int(instance_status["port"])
-        argv.extend(("--edgedb-port", str(args.edgedb_port)))
+        args.gel_port = int(instance_status["port"])
+        argv.extend(("--gel-port", str(args.gel_port)))
 
     benchmarks_data = run_benchmarks(args, argv)
 

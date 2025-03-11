@@ -89,7 +89,7 @@ export class App extends BaseApp {
       user: "postgres_bench",
       host: "localhost",
       database: "postgres_bench",
-      password: "edgedbbenchmark",
+      password: "gelbenchmark",
       port: 15432,
       ...(options || {}),
     };
@@ -241,7 +241,7 @@ export class App extends BaseApp {
         extras: {
           full_name: this.fullName.as("full_name"),
         },
-        where: eq(schema.users.id, sql`any(${ids})`),
+        where: eq(schema.persons.id, sql`any(${ids})`),
       })
       .prepare("findPersons");
   }

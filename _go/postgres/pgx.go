@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/edgedb/imdbench/_go/bench"
-	"github.com/edgedb/imdbench/_go/cli"
+	"github.com/geldata/imdbench/_go/bench"
+	"github.com/geldata/imdbench/_go/cli"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -19,7 +19,7 @@ var pgxTxOpts pgx.TxOptions = pgx.TxOptions{IsoLevel: pgx.RepeatableRead}
 
 func PGXWorker(args cli.Args) (bench.Exec, bench.Close) {
 	url := fmt.Sprintf(
-		"postgresql://postgres_bench:edgedbbenchmark@%v:%v/postgres_bench",
+		"postgresql://postgres_bench:gelbenchmark@%v:%v/postgres_bench",
 		args.Host,
 		args.Port,
 	)

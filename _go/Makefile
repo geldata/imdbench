@@ -6,7 +6,7 @@ gobench: clean build main.go
 	rm -rf "$(CURDIR)/_go"
 
 build:
-	GOPATH="$(CURDIR)/_go" go build -o gobench github.com/edgedb/imdbench/_go
+	GOPATH="$(CURDIR)/_go" go build -o gobench github.com/geldata/imdbench/_go
 
 clean:
 	rm -f "$(CURDIR)/gobench"

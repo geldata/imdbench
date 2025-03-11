@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:edgedb/edgedb.dart';
+import 'package:gel/gel.dart';
 
 import '../dartbench.dart';
 
@@ -152,12 +152,12 @@ class RepackRunner extends _BaseRunner {
   };
 }
 
-class EdgeDBDartApp implements DartBenchmarkApp {
+class GelDartApp implements DartBenchmarkApp {
   static const _insertPrefix = "insert_test__";
   int _concurrency;
   late _BaseRunner _runner;
 
-  EdgeDBDartApp({int concurrency = 1, String runner = 'json'})
+  GelDartApp({int concurrency = 1, String runner = 'json'})
       : _concurrency = concurrency {
     switch (runner) {
       case 'repack':

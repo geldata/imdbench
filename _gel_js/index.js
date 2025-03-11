@@ -1,6 +1,6 @@
 'use strict';
 
-const edgedb = require('edgedb');
+const gel = require('gel');
 const queries = require('./queries');
 const qbQueries = require('./qb_queries');
 
@@ -14,7 +14,7 @@ const qbInsertMoviePlus = qbQueries.insertMoviePlus();
 
 class _BaseConnection {
   constructor(opts) {
-    this.client = edgedb
+    this.client = gel
       .createClient({concurrency: opts.pool})
       .withRetryOptions({attempts: 10});
   }

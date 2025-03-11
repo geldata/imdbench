@@ -12,16 +12,16 @@ import types
 import typing
 
 
-from _edgedb import queries_json as edgedb_queries_json
-from _edgedb import queries_async as edgedb_queries_async
-from _edgedb import queries_repack as edgedb_queries_repack
-from _go.edgedb import queries_edgedb as edgedb_json_golang
+from _gel import queries_json as gel_queries_json
+from _gel import queries_async as gel_queries_async
+from _gel import queries_repack as gel_queries_repack
+from _go.gel import queries_gel as gel_json_golang
 from _go.postgres import queries_pq as postgres_pq_golang
 from _go.postgres import queries_pgx as postgres_pgx_golang
-from _go.http import queries_graphql as edgedb_graphql_golang
+from _go.http import queries_graphql as gel_graphql_golang
 from _go.http import queries_hasura as postgres_hasura_golang
 from _go.http import queries_postgraphile as postgres_postgraphile_golang
-from _go.http import queries_http as edgedb_edgeql_golang
+from _go.http import queries_http as gel_edgeql_golang
 from _django import queries as django_queries
 from _django import queries_restfw as django_queries_restfw
 from _mongodb import queries as mongodb_queries
@@ -39,26 +39,26 @@ class impl(typing.NamedTuple):
 
 IMPLEMENTATIONS = {
 
-    'edgedb_py_json':
-        impl('python', 'EdgeDB (Python, JSON)', edgedb_queries_json),
+    'gel_py_json':
+        impl('python', 'Gel (Python, JSON)', gel_queries_json),
 
-    'edgedb_py_json_async':
-        impl('python', 'EdgeDB (Python, JSON, asyncio)', edgedb_queries_async),
+    'gel_py_json_async':
+        impl('python', 'Gel (Python, JSON, asyncio)', gel_queries_async),
 
-    'edgedb_py_sync':
-        impl('python', 'EdgeDB (Python)', edgedb_queries_repack),
+    'gel_py_sync':
+        impl('python', 'Gel (Python)', gel_queries_repack),
 
-    'edgedb_go':
-        impl('go', 'EdgeDB (Go)', edgedb_json_golang),
+    'gel_go':
+        impl('go', 'Gel (Go)', gel_json_golang),
 
-    'edgedb_go_json':
-        impl('go', 'EdgeDB (Go, JSON)', edgedb_json_golang),
+    'gel_go_json':
+        impl('go', 'Gel (Go, JSON)', gel_json_golang),
 
-    'edgedb_go_graphql':
-        impl('go', 'EdgeDB (GraphQL)', edgedb_graphql_golang),
+    'gel_go_graphql':
+        impl('go', 'Gel (GraphQL)', gel_graphql_golang),
 
-    'edgedb_go_http':
-        impl('go', 'EdgeDB (HTTP)', edgedb_edgeql_golang),
+    'gel_go_http':
+        impl('go', 'Gel (HTTP)', gel_edgeql_golang),
 
     'django':
         impl('python', 'Django ORM', django_queries),
@@ -94,17 +94,17 @@ IMPLEMENTATIONS = {
         impl('go', 'Postgraphile (Go)',
              postgres_postgraphile_golang),
 
-    'edgedb_js':
-        impl('js', 'EdgeDB (Node.js)', None),
+    'gel_js':
+        impl('js', 'Gel (Node.js)', None),
 
-    'edgedb_js_json':
-        impl('js', 'EdgeDB (Node.js, JSON mode)', None),
+    'gel_js_json':
+        impl('js', 'Gel (Node.js, JSON mode)', None),
 
-    'edgedb_js_qb':
-        impl('js', 'EdgeDB (Node.js, query builder)', None),
+    'gel_js_qb':
+        impl('js', 'Gel (Node.js, query builder)', None),
 
-    'edgedb_js_qb_uncached':
-        impl('js', 'EdgeDB (Node.js, query builder, uncached)', None),
+    'gel_js_qb_uncached':
+        impl('js', 'Gel (Node.js, query builder, uncached)', None),
 
     'typeorm':
         impl('js', 'TypeORM', None),
@@ -124,11 +124,11 @@ IMPLEMENTATIONS = {
     'drizzle':
         impl('js', 'Drizzle', None),
 
-    'edgedb_dart':
-        impl('dart', 'EdgeDB (Dart)', None),
+    'gel_dart':
+        impl('dart', 'Gel (Dart)', None),
 
-    'edgedb_dart_json':
-        impl('dart', 'EdgeDB (Dart, JSON mode)', None),
+    'gel_dart_json':
+        impl('dart', 'Gel (Dart, JSON mode)', None),
 
     'postgres_dart':
         impl('dart', 'Postgres (Dart)', None),
@@ -233,8 +233,8 @@ def parse_args(*, prog_desc: str, out_to_json: bool = False,
         help='PostgreSQL server port')
 
     parser.add_argument(
-        '--edgedb-port', type=int, default=None,
-        help='EdgeDB server port')
+        '--gel-port', type=int, default=None,
+        help='Gel server port')
 
     parser.add_argument(
         '--mongodb-port', type=int, default=27017,

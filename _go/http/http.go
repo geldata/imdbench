@@ -10,8 +10,8 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	"github.com/edgedb/imdbench/_go/bench"
-	"github.com/edgedb/imdbench/_go/cli"
+	"github.com/geldata/imdbench/_go/bench"
+	"github.com/geldata/imdbench/_go/cli"
 )
 
 func processID(Vars *map[string]interface{}, key string, val string, isInt bool) {

@@ -14,7 +14,7 @@ const process = require('process');
 const typeormapp = require('./_typeorm/build/index');
 const sequelizeapp = require('./_sequelize/index');
 const pgapp = require('./_postgres/index');
-const edgedbapp = require('./_edgedb_js/index');
+const gelapp = require('./_gel_js/index');
 const prismaapp = require('./_prisma/index');
 const drizzleapp = require('./_drizzle/index');
 
@@ -54,32 +54,32 @@ async function getApp(args) {
       port: args.port,
       max: ncon,
     });
-  } else if (args.orm == 'edgedb_js_json') {
-    app = new edgedbapp.App({
+  } else if (args.orm == 'gel_js_json') {
+    app = new gelapp.App({
       style: 'json',
       host: args.host,
       port: args.port,
       pool: ncon,
     });
     await app.initPool();
-  } else if (args.orm == 'edgedb_js') {
-    app = new edgedbapp.App({
+  } else if (args.orm == 'gel_js') {
+    app = new gelapp.App({
       style: 'repack',
       host: args.host,
       port: args.port,
       pool: ncon,
     });
     await app.initPool();
-  } else if (args.orm == 'edgedb_js_qb') {
-    app = new edgedbapp.App({
+  } else if (args.orm == 'gel_js_qb') {
+    app = new gelapp.App({
       style: 'querybuilder',
       host: args.host,
       port: args.port,
       pool: ncon,
     });
     await app.initPool();
-  } else if (args.orm == 'edgedb_js_qb_uncached') {
-    app = new edgedbapp.App({
+  } else if (args.orm == 'gel_js_qb_uncached') {
+    app = new gelapp.App({
       style: 'querybuilder_uncached',
       host: args.host,
       port: args.port,
@@ -325,10 +325,10 @@ async function main() {
       'prisma',
       'prisma_untuned',
       'drizzle',
-      'edgedb_js',
-      'edgedb_js_json',
-      'edgedb_js_qb',
-      'edgedb_js_qb_uncached',
+      'gel_js',
+      'gel_js_json',
+      'gel_js_qb',
+      'gel_js_qb_uncached',
     ],
   });
 

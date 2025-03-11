@@ -8,11 +8,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/edgedb/imdbench/_go/bench"
-	"github.com/edgedb/imdbench/_go/cli"
-	"github.com/edgedb/imdbench/_go/edgedb"
-	"github.com/edgedb/imdbench/_go/http"
-	"github.com/edgedb/imdbench/_go/postgres"
+	"github.com/geldata/imdbench/_go/bench"
+	"github.com/geldata/imdbench/_go/cli"
+	"github.com/geldata/imdbench/_go/gel"
+	"github.com/geldata/imdbench/_go/http"
+	"github.com/geldata/imdbench/_go/postgres"
 )
 
 type Slice struct {
@@ -165,10 +165,10 @@ func main() {
 	var worker bench.Worker
 
 	switch args.Benchmark {
-	case "edgedb_go":
-		worker = edgedb.RepackWorker
-	case "edgedb_go_json":
-		worker = edgedb.JSONWorker
+	case "gel_go":
+		worker = gel.RepackWorker
+	case "gel_go_json":
+		worker = gel.JSONWorker
 	case "postgres_pq":
 		worker = postgres.PQWorker
 	case "postgres_pgx":

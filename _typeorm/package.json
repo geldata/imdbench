@@ -3,16 +3,16 @@
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
-    "@types/node": "^16.10.3",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "@types/node": "^22.13.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "pg": "^8.11.0",
+    "pg": "^8.14.0",
     "progress": "^2.0.3",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "0.3.16"
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.21"
   },
   "scripts": {
     "build": "tsc",

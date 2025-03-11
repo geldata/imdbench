@@ -20,3 +20,4 @@ venv*
 .python-version
 .dart_tool
 .packages
+_gel_js/querybuilder

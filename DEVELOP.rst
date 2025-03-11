@@ -30,8 +30,8 @@ Run locally
 
 #. Install the following toolchains:
 
-   - `EdgeDB <https://www.edgedb.com/install>`_
-   - `PostgreSQL 13 <https://www.postgresql.org/docs/13/installation.html>`_
+   - `Gel <https://www.geldata.com/install>`_
+   - `PostgreSQL 17 <https://www.postgresql.org/docs/17/installation.html>`_
    - `Golang <https://go.dev/doc/install>`_
    - (Optional) `MongoDB <https://docs.mongodb.com/manual/installation/>`_
 
@@ -64,7 +64,7 @@ Run locally
    .. code-block::
 
       $ make load-django 
-      $ make load-edgedb 
+      $ make load-gel
       $ make load-hasura
       $ make load-mongodb 
       $ make load-postgres
@@ -85,7 +85,7 @@ Run locally
       $ make load-sequelize 
       $ make load-postgres
       $ make load-prisma 
-      $ make load-edgedb       
+      $ make load-gel
 
    Then run the benchmarks:
 
@@ -104,7 +104,7 @@ Run locally
       $ make load-postgres
       $ make load-django 
       $ make load-sqlalchemy 
-      $ make load-edgedb     
+      $ make load-gel
 
    Then run the benchmarks:
 
@@ -121,7 +121,7 @@ Run locally
    .. code-block::
 
       $ make load-postgres
-      $ make load-edgedb
+      $ make load-gel
 
    Then run the benchmarks:
 
@@ -162,20 +162,20 @@ Run locally
    - ``typeorm``
    - ``sequelize``
    - ``prisma``
-   - ``edgedb_js_qb``
+   - ``gel_js_qb``
    - ``django``
    - ``django_restfw``
    - ``mongodb``
    - ``sqlalchemy``
-   - ``edgedb_py_sync``
-   - ``edgedb_py_json``
-   - ``edgedb_py_json_async``
-   - ``edgedb_go``
-   - ``edgedb_go_json``
-   - ``edgedb_go_graphql``
-   - ``edgedb_go_http``
-   - ``edgedb_js``
-   - ``edgedb_js_json``
+   - ``gel_py_sync``
+   - ``gel_py_json``
+   - ``gel_py_json_async``
+   - ``gel_go``
+   - ``gel_go_json``
+   - ``gel_go_graphql``
+   - ``gel_go_http``
+   - ``gel_js``
+   - ``gel_js_json``
    - ``postgres_asyncpg``
    - ``postgres_psycopg``
    - ``postgres_pq``

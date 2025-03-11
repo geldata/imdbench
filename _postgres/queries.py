@@ -19,7 +19,7 @@ async def connect(ctx):
     return await asyncpg.connect(
         user='postgres_bench',
         database='postgres_bench',
-        password='edgedbbenchmark',
+        password='gelbenchmark',
         host=ctx.db_host,
         port=ctx.pg_port)
 
@@ -216,7 +216,7 @@ async def get_movie(conn, id):
         'title': movie['title'],
         'year': movie['year'],
         'description': movie['description'],
-        'avg_rating': float(movie['avg_rating']),
+        'avg_rating': float(movie['avg_rating'] or 0),
 
         'directors': [
             {

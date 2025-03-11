@@ -8,7 +8,7 @@
 
 import argparse
 import asyncio
-import edgedb
+import gel
 import json
 import progress.bar
 import uvloop
@@ -16,7 +16,7 @@ import uvloop
 
 async def import_data(data: dict):
     concurrency = 32
-    client = edgedb.create_async_client(max_concurrency=concurrency)
+    client = gel.create_async_client(max_concurrency=concurrency)
 
     users = data['user']
     reviews = data['review']
@@ -258,7 +258,7 @@ def id2image(idmap, ids):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Load EdgeDB dataset.')
+    parser = argparse.ArgumentParser(description='Load Gel dataset.')
     parser.add_argument('filename', type=str,
                         help='The JSON dataset file')
     args = parser.parse_args()
