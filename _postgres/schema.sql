@@ -79,7 +79,7 @@ CREATE INDEX creation_time_index ON reviews(creation_time);
 
 
 CREATE OR REPLACE FUNCTION avg_rating(m movies) RETURNS numeric AS $$
-    SELECT avg(rating)
+    SELECT coalesce(avg(rating), 0)
     FROM reviews
     WHERE movie_id = m.id;
 $$ LANGUAGE SQL STABLE;

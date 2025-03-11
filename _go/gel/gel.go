@@ -8,35 +8,37 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/geldata/gel-go"
+	gel "github.com/geldata/gel-go"
+	"github.com/geldata/gel-go/gelcfg"
+	"github.com/geldata/gel-go/geltypes"
 
 	"github.com/geldata/imdbench/_go/bench"
 	"github.com/geldata/imdbench/_go/cli"
 )
 
 type User struct {
-	ID            gel.UUID `json:"id" gel:"id"`
+	ID            geltypes.UUID `json:"id" gel:"id"`
 	Name          string      `json:"name" gel:"name"`
 	Image         string      `json:"image" gel:"image"`
 	LatestReviews []UReview   `json:"latest_reviews" gel:"latest_reviews"`
 }
 
 type UReview struct {
-	ID     gel.UUID `json:"id" gel:"id"`
+	ID     geltypes.UUID `json:"id" gel:"id"`
 	Body   string      `json:"body" gel:"body"`
 	Rating int64       `json:"rating" gel:"rating"`
 	Movie  RMovie      `json:"movie" gel:"movie"`
 }
 
 type RMovie struct {
-	ID        gel.UUID `json:"id" gel:"id"`
+	ID        geltypes.UUID `json:"id" gel:"id"`
 	Image     string      `json:"image" gel:"image"`
 	Title     string      `json:"title" gel:"title"`
 	AvgRating float64     `json:"avg_rating" gel:"avg_rating"`
 }
 
 type Movie struct {
-	ID          gel.UUID `json:"id" gel:"id"`
+	ID          geltypes.UUID `json:"id" gel:"id"`
 	Image       string      `json:"image" gel:"image"`
 	Title       string      `json:"title" gel:"title"`
 	Year        int64       `json:"year" gel:"year"`
@@ -48,35 +50,35 @@ type Movie struct {
 }
 
 type MPerson struct {
-	ID       gel.UUID `json:"id" gel:"id"`
+	ID       geltypes.UUID `json:"id" gel:"id"`
 	FullName string      `json:"full_name" gel:"full_name"`
 	Image    string      `json:"image" gel:"image"`
 }
 
 type MReview struct {
-	ID     gel.UUID `json:"id" gel:"id"`
+	ID     geltypes.UUID `json:"id" gel:"id"`
 	Body   string      `json:"body" gel:"body"`
 	Rating int64       `json:"rating" gel:"rating"`
 	Author RUser       `json:"author" gel:"author"`
 }
 
 type RUser struct {
-	ID    gel.UUID `json:"id" gel:"id"`
+	ID    geltypes.UUID `json:"id" gel:"id"`
 	Name  string      `json:"name" gel:"name"`
 	Image string      `json:"image" gel:"image"`
 }
 
 type Person struct {
-	ID       gel.UUID        `json:"id" gel:"id"`
+	ID       geltypes.UUID        `json:"id" gel:"id"`
 	FullName string             `json:"full_name" gel:"full_name"`
 	Image    string             `json:"image" gel:"image"`
-	Bio      gel.OptionalStr `json:"bio" gel:"bio"`
+	Bio      geltypes.OptionalStr `json:"bio" gel:"bio"`
 	ActedIn  []PMovie           `json:"acted_in" gel:"acted_in"`
 	Directed []PMovie           `json:"directed" gel:"directed"`
 }
 
 type PMovie struct {
-	ID        gel.UUID `json:"id" gel:"id"`
+	ID        geltypes.UUID `json:"id" gel:"id"`
 	Image     string      `json:"image" gel:"image"`
 	Title     string      `json:"title" gel:"title"`
 	Year      int64       `json:"year" gel:"year"`
@@ -84,8 +86,7 @@ type PMovie struct {
 }
 
 func RepackWorker(args cli.Args) (exec bench.Exec, close bench.Close) {
-	ctx := context.TODO()
-	pool, err := gel.CreateClient(ctx, gel.Options{Concurrency: 1})
+	pool, err := gel.CreateClient(gelcfg.Options{Concurrency: 1})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -133,7 +134,7 @@ func execPerson(pool *gel.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = gel.ParseUUID(id)
+		params["id"], err = geltypes.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -168,7 +169,7 @@ func execMovie(pool *gel.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = gel.ParseUUID(id)
+		params["id"], err = geltypes.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -203,7 +204,7 @@ func execUser(pool *gel.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = gel.ParseUUID(id)
+		params["id"], err = geltypes.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -238,7 +239,7 @@ func updateMovie(pool *gel.Client, args cli.Args) bench.Exec {
 
 	return func(qargs []string) (time.Duration, string) {
 		id := qargs[0]
-		params["id"], err = gel.ParseUUID(id)
+		params["id"], err = geltypes.ParseUUID(id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -313,19 +314,19 @@ func insertMovie(pool *gel.Client, args cli.Args) bench.Exec {
 		params["description"] = text + "description" + strconv.Itoa(num)
 		params["year"] = int64(num)
 
-		params["did"], err = gel.ParseUUID(qargs[1])
+		params["did"], err = geltypes.ParseUUID(qargs[1])
 		if err != nil {
 			log.Fatal(err)
 		}
-		params["cid0"], err = gel.ParseUUID(qargs[2])
+		params["cid0"], err = geltypes.ParseUUID(qargs[2])
 		if err != nil {
 			log.Fatal(err)
 		}
-		params["cid1"], err = gel.ParseUUID(qargs[3])
+		params["cid1"], err = geltypes.ParseUUID(qargs[3])
 		if err != nil {
 			log.Fatal(err)
 		}
-		params["cid2"], err = gel.ParseUUID(qargs[4])
+		params["cid2"], err = geltypes.ParseUUID(qargs[4])
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -393,7 +394,7 @@ func insertMoviePlus(pool *gel.Client, args cli.Args) bench.Exec {
 
 func JSONWorker(args cli.Args) (bench.Exec, bench.Close) {
 	ctx := context.TODO()
-	pool, err := gel.CreateClient(ctx, gel.Options{Concurrency: 1})
+	pool, err := gel.CreateClient(gelcfg.Options{Concurrency: 1})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -409,12 +410,12 @@ func JSONWorker(args cli.Args) (bench.Exec, bench.Close) {
 	exec := func(qargs []string) (time.Duration, string) {
 		if args.QueryName[:3] == "get" {
 			// get queries only have one argument - ID
-			params["id"], err = gel.ParseUUID(qargs[0])
+			params["id"], err = geltypes.ParseUUID(qargs[0])
 			if err != nil {
 				log.Fatal(err)
 			}
 		} else if args.QueryName == "update_movie" {
-			params["id"], err = gel.ParseUUID(qargs[0])
+			params["id"], err = geltypes.ParseUUID(qargs[0])
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -432,19 +433,19 @@ func JSONWorker(args cli.Args) (bench.Exec, bench.Close) {
 			params["description"] = text + "description" + strconv.Itoa(num)
 			params["year"] = int64(num)
 
-			params["did"], err = gel.ParseUUID(qargs[1])
+			params["did"], err = geltypes.ParseUUID(qargs[1])
 			if err != nil {
 				log.Fatal(err)
 			}
-			params["cid0"], err = gel.ParseUUID(qargs[2])
+			params["cid0"], err = geltypes.ParseUUID(qargs[2])
 			if err != nil {
 				log.Fatal(err)
 			}
-			params["cid1"], err = gel.ParseUUID(qargs[3])
+			params["cid1"], err = geltypes.ParseUUID(qargs[3])
 			if err != nil {
 				log.Fatal(err)
 			}
-			params["cid2"], err = gel.ParseUUID(qargs[4])
+			params["cid2"], err = geltypes.ParseUUID(qargs[4])
 			if err != nil {
 				log.Fatal(err)
 			}

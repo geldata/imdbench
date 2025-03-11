@@ -216,7 +216,7 @@ async def get_movie(conn, id):
         'title': movie['title'],
         'year': movie['year'],
         'description': movie['description'],
-        'avg_rating': float(movie['avg_rating']),
+        'avg_rating': float(movie['avg_rating'] or 0),
 
         'directors': [
             {
