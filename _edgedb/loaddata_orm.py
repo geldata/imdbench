@@ -12,6 +12,19 @@ import gel
 from .models import default
 from datetime import datetime
 
+import contextlib
+
+
+@contextlib.contextmanager
+def timeit(msg):
+    import time
+
+    st = time.monotonic()
+    try:
+        yield
+    finally:
+        print(f"{msg}: {time.monotonic() - st:.4f} secs")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Load Gel ORM dataset.")
@@ -25,69 +38,94 @@ def main():
     db = gel.create_client()
 
     # LOAD PEOPLE
-    people_map = {}
-    people_objs = []
-    for i, p in enumerate(data["person"]):
-        person = default.Person(
-            first_name=p["first_name"],
-            middle_name=p["middle_name"],
-            last_name=p["last_name"],
-            image=p["image"],
-            bio=p["bio"],
-        )
-        people_map[p["id"]] = person
-        people_objs.append(person)
-        print(f"\rPerson {i}/{len(data['person'])}", end="", flush=True)
-    db.save(*people_objs)
-    print()
+
+    with timeit("Instantiating people"):
+        people_map = {}
+        people_objs = []
+        for i, p in enumerate(data["person"]):
+            person = default.Person(
+                first_name=p["first_name"],
+                middle_name=p["middle_name"],
+                last_name=p["last_name"],
+                image=p["image"],
+                bio=p["bio"],
+            )
+            people_map[p["id"]] = person
+            people_objs.append(person)
+            print(f"\rPerson {i}/{len(data['person'])}", end="", flush=True)
+        print()
+
+    with timeit("Saving people"):
+        db.save(*people_objs)
 
     # LOAD USERS
-    user_map = {}
-    user_objs = []
-    for i, u in enumerate(data["user"]):
-        user = default.User(name=u["name"], image=u["image"])
-        user_map[u["id"]] = user
-        user_objs.append(user)
-        print(f"\rUser {i}/{len(data['user'])}", end="", flush=True)
-    db.save(*user_objs)
-    print()
+    with timeit("Instantiating users"):
+        user_map = {}
+        user_objs = []
+        for i, u in enumerate(data["user"]):
+            user = default.User(name=u["name"], image=u["image"])
+            user_map[u["id"]] = user
+            user_objs.append(user)
+            print(f"\rUser {i}/{len(data['user'])}", end="", flush=True)
+        print()
+
+    with timeit("Saving users"):
+        db.save(*user_objs)
 
     # LOAD MOVIES
-    movie_map = {}
-    movie_objs = []
-    for i, m in enumerate(data["movie"]):
-        directors = [people_map[pid] for pid in m["directors"]]
-        cast = [people_map[pid] for pid in m["cast"]]
-        movie = default.Movie(
-            title=m["title"],
-            description=m["description"],
-            year=m["year"],
-            image=m["image"],
-            directors=directors,
-            cast=cast,
-        )
-        movie_map[m["id"]] = movie
-        movie_objs.append(movie)
-        print(f"\rMovie {i}/{len(data['movie'])}", end="", flush=True)
-    db.save(*movie_objs)
-    print()
+    with timeit("Instantiating movies"):
+        movie_map = {}
+        movie_objs = []
+        for i, m in enumerate(data["movie"]):
+            directors = [people_map[pid] for pid in m["directors"]]
+            cast = [people_map[pid] for pid in m["cast"]]
+            movie = default.Movie(
+                title=m["title"],
+                description=m["description"],
+                year=m["year"],
+                image=m["image"],
+                directors=directors,
+                cast=cast,
+            )
+            movie_map[m["id"]] = movie
+            movie_objs.append(movie)
+            print(f"\rMovie {i}/{len(data['movie'])}", end="", flush=True)
+        print()
+
+    with timeit("Saving movies"):
+        import cProfile, pstats, io
+
+        pr = cProfile.Profile()
+        pr.enable()
+
+        db.save(*movie_objs)
+
+        pr.disable()
+        s = io.StringIO()
+        ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
+        ps.print_stats()
+        profile_stats = s.getvalue()
+        print("\nProfiling Results for movie saving:\n", profile_stats)
 
     # LOAD REVIEWS
-    review_objs = []
-    for i, r in enumerate(data["review"]):
-        creation_time = datetime.fromisoformat(r["creation_time"][:-6])
-        review = default.Review(
-            body=r["body"],
-            rating=r["rating"],
-            author=user_map[r["author"]],
-            movie=movie_map[r["movie"]],
-            creation_time=creation_time,
-        )
-        review_objs.append(review)
-        print(f"\rReview {i}/{len(data['movie'])}", end="", flush=True)
-    db.save(*review_objs)
-    print()
+    with timeit("Instantiating reviews"):
+        review_objs = []
+        for i, r in enumerate(data["review"]):
+            creation_time = datetime.fromisoformat(r["creation_time"][:-6])
+            review = default.Review(
+                body=r["body"],
+                rating=r["rating"],
+                author=user_map[r["author"]],
+                movie=movie_map[r["movie"]],
+                creation_time=creation_time,
+            )
+            review_objs.append(review)
+            print(f"\rReview {i}/{len(data['review'])}", end="", flush=True)
+        print()
+    with timeit("Saving reviews"):
+        db.save(*review_objs)
 
 
 if __name__ == "__main__":
-    main()
+    with timeit("total time"):
+        main()
