@@ -26,6 +26,26 @@ def timeit(msg):
         print(f"{msg}: {time.monotonic() - st:.4f} secs")
 
 
+@contextlib.contextmanager
+def profile():
+    import cProfile
+    import pstats
+    import io
+
+    pr = cProfile.Profile()
+    pr.enable()
+
+    try:
+        yield
+    finally:
+        pr.disable()
+        s = io.StringIO()
+        ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
+        ps.print_stats()
+        profile_stats = s.getvalue()
+        print("\n\n", profile_stats, "\n\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Load Gel ORM dataset.")
     parser.add_argument("filename", type=str, help="The JSON dataset file")
@@ -73,7 +93,7 @@ def main():
         db.save(*user_objs)
 
     # LOAD MOVIES
-    with timeit("Instantiating movies"):
+    with timeit("Instantiating movies"), profile():
         movie_map = {}
         movie_objs = []
         for i, m in enumerate(data["movie"]):
@@ -92,20 +112,7 @@ def main():
             print(f"\rMovie {i}/{len(data['movie'])}", end="", flush=True)
         print()
 
-    with timeit("Saving movies"):
-        import cProfile, pstats, io
-
-        pr = cProfile.Profile()
-        pr.enable()
-
-        db.save(*movie_objs)
-
-        pr.disable()
-        s = io.StringIO()
-        ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
-        ps.print_stats()
-        profile_stats = s.getvalue()
-        print("\nProfiling Results for movie saving:\n", profile_stats)
+    db.save(*movie_objs)
 
     # LOAD REVIEWS
     with timeit("Instantiating reviews"):
