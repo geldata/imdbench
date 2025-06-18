@@ -10,7 +10,7 @@ import argparse
 import json
 import gel
 from .models import default
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import contextlib
 
@@ -46,6 +46,10 @@ def profile():
         print("\n\n", profile_stats, "\n\n")
 
 
+SAVE_AT_ONCE = True
+INSERT_LINK_PROPS = True
+
+
 def main():
     parser = argparse.ArgumentParser(description="Load Gel ORM dataset.")
     parser.add_argument("filename", type=str, help="The JSON dataset file")
@@ -55,7 +59,9 @@ def main():
         data = json.load(f)
 
     # Create Gel ORM client
-    db = gel.create_client()
+    db = gel.create_client().with_config(
+        session_idle_transaction_timeout=timedelta(minutes=5)
+    )
 
     # LOAD PEOPLE
 
@@ -75,8 +81,9 @@ def main():
             print(f"\rPerson {i}/{len(data['person'])}", end="", flush=True)
         print()
 
-    with timeit("Saving people"):
-        db.save(*people_objs)
+    if not SAVE_AT_ONCE:
+        with timeit("Saving people"):
+            db.save(*people_objs)
 
     # LOAD USERS
     with timeit("Instantiating users"):
@@ -89,16 +96,28 @@ def main():
             print(f"\rUser {i}/{len(data['user'])}", end="", flush=True)
         print()
 
-    with timeit("Saving users"):
-        db.save(*user_objs)
+    if not SAVE_AT_ONCE:
+        with timeit("Saving users"):
+            db.save(*user_objs)
 
     # LOAD MOVIES
-    with timeit("Instantiating movies"), profile():
+    with timeit("Instantiating movies"):
         movie_map = {}
         movie_objs = []
         for i, m in enumerate(data["movie"]):
-            directors = [people_map[pid] for pid in m["directors"]]
-            cast = [people_map[pid] for pid in m["cast"]]
+            if INSERT_LINK_PROPS:
+                directors = [
+                    default.Movie.directors.link(people_map[pid], list_order=i)
+                    for i, pid in enumerate(m["directors"])
+                ]
+                cast = [
+                    default.Movie.cast.link(people_map[pid], list_order=i)
+                    for i, pid in enumerate(m["cast"])
+                ]
+            else:
+                directors = [people_map[pid] for pid in m["directors"]]
+                cast = [people_map[pid] for pid in m["cast"]]
+
             movie = default.Movie(
                 title=m["title"],
                 description=m["description"],
@@ -112,7 +131,9 @@ def main():
             print(f"\rMovie {i}/{len(data['movie'])}", end="", flush=True)
         print()
 
-    db.save(*movie_objs)
+    if not SAVE_AT_ONCE:
+        with timeit("Saving movies"):
+            db.save(*movie_objs)
 
     # LOAD REVIEWS
     with timeit("Instantiating reviews"):
@@ -129,8 +150,21 @@ def main():
             review_objs.append(review)
             print(f"\rReview {i}/{len(data['review'])}", end="", flush=True)
         print()
-    with timeit("Saving reviews"):
-        db.save(*review_objs)
+
+    if not SAVE_AT_ONCE:
+        with timeit("Saving reviews"):
+            db.save(*review_objs)
+    else:
+        with timeit("Saving everything"):  # , profile():
+            stats = db.__debug_save__(
+                *people_objs,
+                *user_objs,
+                *movie_objs,
+                *review_objs,
+            )
+
+        for k, (v, n) in stats.items():
+            print(f"++ {n} queries, total time {v:.2f}ms: {k}\n\n\n")
 
 
 if __name__ == "__main__":
