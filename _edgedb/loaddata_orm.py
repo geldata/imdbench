@@ -156,15 +156,25 @@ def main():
             db.save(*review_objs)
     else:
         with timeit("Saving everything"):  # , profile():
-            stats = db.__debug_save__(
+            debug = db.__debug_save__(
                 *people_objs,
                 *user_objs,
                 *movie_objs,
                 *review_objs,
             )
 
-        for k, (v, n) in stats.items():
-            print(f"++ {n} queries, total time {v:.2f}ms: {k}\n\n\n")
+        for i, q in enumerate(debug.queries):
+            print(
+                f"++ {i} {q.total_execs=} {q.total_exec_time:.2f} {q.max_args_number=}"
+            )
+            print(q.query, "\n\n")
+
+            # with open(f"{i}.json", "wt") as f:
+            #     f.write(qdebug.args_analyze)
+
+            # with open(f"{i}.py", "wt") as f:
+            #     f.write(f"query = {qdebug.args_query!r}\n")
+            #     f.write(f"args = {qdebug.analyze_args!r}")
 
 
 if __name__ == "__main__":
