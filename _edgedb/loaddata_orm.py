@@ -8,8 +8,11 @@
 
 import argparse
 import json
+import sys
+
 import gel
 from .models import default
+
 from datetime import datetime, timedelta
 
 import contextlib
@@ -26,8 +29,18 @@ def timeit(msg):
         print(f"{msg}: {time.monotonic() - st:.4f} secs")
 
 
+DEBUG_SAVE = False
+SAVE_AT_ONCE = True
+INSERT_LINK_PROPS = True
+PROFILE = True
+
+
 @contextlib.contextmanager
 def profile():
+    if not PROFILE:
+        yield
+        return
+
     import cProfile
     import pstats
     import io
@@ -46,14 +59,12 @@ def profile():
         print("\n\n", profile_stats, "\n\n")
 
 
-SAVE_AT_ONCE = True
-INSERT_LINK_PROPS = True
-
-
 def main():
     parser = argparse.ArgumentParser(description="Load Gel ORM dataset.")
     parser.add_argument("filename", type=str, help="The JSON dataset file")
     args = parser.parse_args()
+
+    print(f">>> {DEBUG_SAVE=} {SAVE_AT_ONCE=} {INSERT_LINK_PROPS=} {PROFILE=} <<<")
 
     with open(args.filename, "rt") as f:
         data = json.load(f)
@@ -101,7 +112,10 @@ def main():
             db.save(*user_objs)
 
     # LOAD MOVIES
-    with timeit("Instantiating movies"):
+    with (
+        timeit(f"Instantiating movies {'with linkprops' if INSERT_LINK_PROPS else ''}"),
+        profile(),
+    ):
         movie_map = {}
         movie_objs = []
         for i, m in enumerate(data["movie"]):
@@ -131,6 +145,8 @@ def main():
             print(f"\rMovie {i}/{len(data['movie'])}", end="", flush=True)
         print()
 
+    sys.exit()
+
     if not SAVE_AT_ONCE:
         with timeit("Saving movies"):
             db.save(*movie_objs)
@@ -154,8 +170,8 @@ def main():
     if not SAVE_AT_ONCE:
         with timeit("Saving reviews"):
             db.save(*review_objs)
-    else:
-        with timeit("Saving everything"):  # , profile():
+    elif DEBUG_SAVE:
+        with timeit("Saving everything (debug)"):  # , profile():
             debug = db.__debug_save__(
                 *people_objs,
                 *user_objs,
@@ -175,6 +191,14 @@ def main():
             # with open(f"{i}.py", "wt") as f:
             #     f.write(f"query = {qdebug.args_query!r}\n")
             #     f.write(f"args = {qdebug.analyze_args!r}")
+    else:
+        with timeit("Saving everything"):
+            db.save(
+                *people_objs,
+                *user_objs,
+                *movie_objs,
+                *review_objs,
+            )
 
 
 if __name__ == "__main__":
